@@ -953,6 +953,7 @@ YAF_STARTUP_FUNCTION(config_ini) {
 #else
 	zend_class_implements(yaf_config_ini_ce TSRMLS_CC, 2, zend_ce_iterator, zend_ce_arrayaccess);
 #endif
+	zend_declare_property_bool(yaf_config_ini_ce, ZEND_STRL(YAF_CONFIG_PROPERT_NAME_READONLY), 1, ZEND_ACC_PROTECTED TSRMLS_CC);
 
 	yaf_config_ini_ce->ce_flags |= ZEND_ACC_FINAL_CLASS;
 
