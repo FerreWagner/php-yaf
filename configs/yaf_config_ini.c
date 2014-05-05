@@ -752,6 +752,28 @@ PHP_METHOD(yaf_config_ini, toArray) {
 /** {{{ proto public Yaf_Config_Ini::set($name, $value)
 */
 PHP_METHOD(yaf_config_ini, set) {
+    zval *readonly = zend_read_property(yaf_config_ini_ce, getThis(), ZEND_STRL(YAF_CONFIG_PROPERT_NAME_READONLY), 1 TSRMLS_CC);
+
+	if (!Z_BVAL_P(readonly)) {
+		zval *name, *value, *props;
+		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zz", &name, &value) == FAILURE) {
+			return;
+		}
+
+		if (Z_TYPE_P(name) != IS_STRING || !Z_STRLEN_P(name)) {
+			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Expect a string key name");
+			RETURN_FALSE;
+		}
+
+		Z_ADDREF_P(value);
+		props = zend_read_property(yaf_config_ini_ce, getThis(), ZEND_STRL(YAF_CONFIG_PROPERT_NAME), 1 TSRMLS_CC);
+		if (zend_hash_update(Z_ARRVAL_P(props), Z_STRVAL_P(name), Z_STRLEN_P(name) + 1, (void **)&value, sizeof(zval*), NULL) == SUCCESS) {
+			RETURN_TRUE;
+		} else {
+			Z_DELREF_P(value);
+		}
+	}
+
 	RETURN_FALSE;
 }
 /* }}} */
@@ -781,6 +803,25 @@ PHP_METHOD(yaf_config_ini, count) {
 /** {{{ proto public Yaf_Config_Ini::offsetUnset($index)
 */
 PHP_METHOD(yaf_config_ini, offsetUnset) {
+	zval *readonly = zend_read_property(yaf_config_ini_ce, getThis(), ZEND_STRL(YAF_CONFIG_PROPERT_NAME_READONLY), 1 TSRMLS_CC);
+
+	if (!Z_BVAL_P(readonly)) {
+		zval *name, *props;
+		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &name) == FAILURE) {
+			return;
+		}
+
+		if (Z_TYPE_P(name) != IS_STRING || !Z_STRLEN_P(name)) {
+			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Expect a string key name");
+			RETURN_FALSE;
+		}
+
+		props = zend_read_property(yaf_config_ini_ce, getThis(), ZEND_STRL(YAF_CONFIG_PROPERT_NAME), 1 TSRMLS_CC);
+		if (zend_hash_del(Z_ARRVAL_P(props), Z_STRVAL_P(name), Z_STRLEN_P(name) + 1) == SUCCESS) {
+			RETURN_TRUE;
+		}
+	}
+
 	RETURN_FALSE;
 }
 /* }}} */
@@ -855,7 +896,8 @@ PHP_METHOD(yaf_config_ini, valid) {
 /** {{{ proto public Yaf_Config_Ini::readonly(void)
 */
 PHP_METHOD(yaf_config_ini, readonly) {
-	RETURN_TRUE;
+    	zval *readonly = zend_read_property(yaf_config_ini_ce, getThis(), ZEND_STRL(YAF_CONFIG_PROPERT_NAME_READONLY), 1 TSRMLS_CC);
+	RETURN_BOOL(Z_LVAL_P(readonly));
 }
 /* }}} */
 
