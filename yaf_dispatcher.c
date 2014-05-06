@@ -731,7 +731,7 @@ int yaf_dispatcher_handle(yaf_dispatcher_t *dispatcher, yaf_request_t *request, 
 				int auto_render = 1;
 				render = zend_read_property(ce, executor, ZEND_STRL(YAF_CONTROLLER_PROPERTY_NAME_RENDER), 1 TSRMLS_CC);
 				instantly_flush	= zend_read_property(yaf_dispatcher_ce, dispatcher, ZEND_STRL(YAF_DISPATCHER_PROPERTY_NAME_FLUSH), 1 TSRMLS_CC);
-				if (render == EG(uninitialized_zval_ptr)) {
+				if ((Z_TYPE_P(render) == IS_NULL) || render == EG(uninitialized_zval_ptr)) {
 					render = zend_read_property(yaf_dispatcher_ce, dispatcher, ZEND_STRL(YAF_DISPATCHER_PROPERTY_NAME_RENDER), 1 TSRMLS_CC);
 					auto_render = Z_BVAL_P(render);
 				} else if (Z_TYPE_P(render) <= IS_BOOL && !Z_BVAL_P(render)) {
