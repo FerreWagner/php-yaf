@@ -242,7 +242,7 @@ static inline void yaf_dispatcher_fix_default(yaf_dispatcher_t *dispatcher, yaf_
 		zend_update_property(yaf_request_ce, request, ZEND_STRL(YAF_REQUEST_PROPERTY_NAME_MODULE), default_module TSRMLS_CC);
 	} else {
 		char *p = zend_str_tolower_dup(Z_STRVAL_P(module), Z_STRLEN_P(module));
-		/**p = toupper(*p);*/
+		*p = toupper(*p);
 		zend_update_property_stringl(yaf_request_ce, request, ZEND_STRL(YAF_REQUEST_PROPERTY_NAME_MODULE), p, Z_STRLEN_P(module) TSRMLS_CC);
 		efree(p);
 	}
@@ -1268,7 +1268,7 @@ PHP_METHOD(yaf_dispatcher, setDefaultModule) {
 		zval *module_std;
 		MAKE_STD_ZVAL(module_std);
 		ZVAL_STRING(module_std, zend_str_tolower_dup(Z_STRVAL_P(module), Z_STRLEN_P(module)), 0);
-		/**Z_STRVAL_P(module_std) = toupper(*Z_STRVAL_P(module_std));*/
+		*Z_STRVAL_P(module_std) = toupper(*Z_STRVAL_P(module_std));
 		zend_update_property(yaf_dispatcher_ce, self, ZEND_STRL(YAF_DISPATCHER_PROPERTY_NAME_MODULE), module_std TSRMLS_CC);
 		zval_ptr_dtor(&module_std);
 
