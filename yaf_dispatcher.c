@@ -631,7 +631,7 @@ int yaf_dispatcher_handle(yaf_dispatcher_t *dispatcher, yaf_request_t *request, 
 			func_name_len = spprintf(&func_name,  0, "%s%s", action_lower, "action");
 			efree(action_lower);
 
-			if (zend_hash_find(&((ce)->function_table), func_name, func_name_len + 1, (void **)&fptr) == SUCCESS) {
+			if (zend_hash_find(&((ce)->function_table), func_name, func_name_len + 1, (void **)&fptr) == SUCCESS  || zend_hash_find(&((ce)->function_table), "__call", 7, (void **)&fptr) == SUCCESS) {
 				uint count = 0;
 				zval ***call_args = NULL;
 
